@@ -30,16 +30,18 @@ function parseDescriptionLink($elem){
     return $list;
 }
 
+function parseDescriptionText($link, $className){
+    $r = curl_get($link);
+    $d = loadDocToParser($r);
+    $t = parseElementsByClass($d, $className);
+    displayElems($d, $t); //Delete this string after finish example
+}
+
+/*DISPLAY ONLY*/
+
 function displayElems($dom, $elem){
     foreach($elem as $div) {
         echo $dom->saveXML($div).'<br>';
         echo "<hr/>";
     }
-}
-
-function parseDescriptionText($link, $className){
-    $r = curl_get($link);
-    $d = loadDocToParser($r);
-    $t = parseElementsByClass($d, $className);
-    displayElems($d, $t);
 }
