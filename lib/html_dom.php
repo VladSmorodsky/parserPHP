@@ -42,6 +42,5 @@ function parseDescriptionText($link, $className){
 function displayElems($dom, $elem){
     foreach($elem as $div) {
         echo $dom->saveXML($div).'<br>';
-        echo "<hr/>";
     }
 }

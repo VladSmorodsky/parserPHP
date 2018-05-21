@@ -9,13 +9,20 @@
     $html = curl_get('https://dailyillini.com/news/'); //Content getting
     $dom = loadDocToParser($html);
     $elem = parseElementsByClass($dom, 'searchheadline');
-    displayElems($dom, $elem);
+    //displayElems($dom, $elem);
     //parseDescriptionText('https://dailyillini.com/news/', 'searchheadline');
 
     $list = parseDescriptionLink($elem);
+
+    //$dare = parseElementsByClass($dom, 'storydate');
+
+    //displayElems($dom, $dare);
     for($list->rewind();$list->valid();$list->next())
     {
+
         parseDescriptionText($list->current(), 'storycontent');
+        parseDescriptionText($list->current(), 'storydate');
+        echo "<hr>";
     }
 echo "<br/>";
 
