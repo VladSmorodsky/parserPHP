@@ -17,9 +17,12 @@
     //$dare = parseElementsByClass($dom, 'storydate');
 
     //displayElems($dom, $dare);
+
+    downloadImg(parseDescriptionText($list->current(), 'catboxphoto feature-image'));
+
     for($list->rewind();$list->valid();$list->next())
     {
-
+        //parseDescriptionText($list->current(), 'catboxphoto feature-image');
         parseDescriptionText($list->current(), 'storycontent');
         parseDescriptionText($list->current(), 'storydate');
         echo "<hr>";

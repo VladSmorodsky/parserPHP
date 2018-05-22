@@ -37,6 +37,10 @@ function parseDescriptionText($link, $className){
     displayElems($d, $t); //Delete this string after finish example
 }
 
+function downloadImg($imgLink){
+    file_put_contents("../storage/", $imgLink);
+}
+
 /*DISPLAY ONLY*/
 
 function displayElems($dom, $elem){
