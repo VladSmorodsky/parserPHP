@@ -18,9 +18,40 @@ function parseElementsByClass($dom, $className){
     return $elements;
 }
 
-function parseDescriptionLink($elem){
+
+//Optimal
+function parseElements($dom, $attr ,$className){
+    $xpath = new DomXPath($dom);
+    $class = $className;
+    $elements = $xpath->query("//*[contains(concat(' ', normalize-space(@".$attr."), ' '), ' $class ')]");
+    return $elements;
+}
+
+function getSplToArray($splList){
+    $listArr = array();
+    foreach ($splList as $k => $v){
+        $v = trim($v, '"');
+        $listArr[$k] = $v;
+    }
+    return $listArr;
+}
+
+function parseImgLink($patent_tag){
     $list = new SplDoublyLinkedList();
-    foreach($elem as $container) {
+    foreach($patent_tag as $container) {
+        $arr = $container->getElementsByTagName("img");
+        foreach($arr as $item) {
+            $href =  $item->getAttribute("src");
+            $list->push($href);
+        }
+    }
+    return getSplToArray($list);
+}
+
+
+function parseDescriptionLink($patent_tag){
+    $list = new SplDoublyLinkedList();
+    foreach($patent_tag as $container) {
         $arr = $container->getElementsByTagName("a");
         foreach($arr as $item) {
             $href =  $item->getAttribute("href");
@@ -30,21 +61,32 @@ function parseDescriptionLink($elem){
     return $list;
 }
 
+//Parse main description text
 function parseDescriptionText($link, $className){
     $r = curl_get($link);
     $d = loadDocToParser($r);
     $t = parseElementsByClass($d, $className);
-    displayElems($d, $t); //Delete this string after finish example
+    return displayElems($d, $t); //Delete this string after finish example
+    //return $d;
+    //return $t;
+
 }
 
+
+//Downloading image
 function downloadImg($imgLink){
-    file_put_contents("../storage/", $imgLink);
+    //$img =  parseElementsByClass($dom, $imgLink);//parseDescriptionText($list->current(), 'catboxphoto feature-image');
+    $url= $imgLink; //"https://dailyillini.com/wp-content/uploads/2018/05/Illini-4000-photo-475x459.jpg"
+    $name = "storage/".basename($url);
+    copy($url, $name);
 }
 
-/*DISPLAY ONLY*/
 
+//Display resilt
 function displayElems($dom, $elem){
     foreach($elem as $div) {
+        //$dom->saveXML($div);
         echo $dom->saveXML($div).'<br>';
     }
+    //return $dom;
 }
