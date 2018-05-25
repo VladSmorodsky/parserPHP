@@ -4,50 +4,54 @@ ini_set("max_execution_time", "1200"); #изменяем максимально�
 libxml_use_internal_errors(true); //hide warnings from web site
 
 
-include_once ('lib/sql.php');
+//include_once ('lib/sql.php');
 include_once ('lib/curl_query.php');
 include_once ('lib/html_dom.php');
+
+$servername = "localhost";
+$username = "root";
+$password = "storm1382";
+$db_name = "parserphp";
+
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$db_name", $username, $password);
+    // set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Connected successfully";
+}
+catch(PDOException $e)
+{
+    echo "Connection failed: " . $e->getMessage();
+}
 
 
 $html = curl_get('https://dailyillini.com/news/'); //Content getting
 $dom = loadDocToParser($html);
-//var_dump($dom);
-$elem = parseElementsByClass($dom, 'searchheadline');
 
-//TYPE TESTING
+$finder = new DomXPath($dom);
+$headers = $finder->query("//*[contains(@class, 'searchheadline')]");
 
-/*var_dump($elem);
-echo "<hr>";*/
-$list = parseDescriptionLink($elem); //get anchor
-/*var_dump($list);
-echo "<hr>";*/
-$arrList = getSplToArray($list);
-/*var_dump($arrList);
-echo "<hr>";*/
-$l = curl_get($arrList[0]);
-/*var_dump($l);
-echo "<hr>";*/
-$d = loadDocToParser($l);
-/*var_dump($d);
-echo "<hr>";*/
-$el_title = parseElementsByClass($d, 'storyheadline');
-/*var_dump($el_title);
-echo "<hr>";*/
-displayElems($d, $el_title);
-$el_date = parseElementsByClass($d, 'storydate');
-displayElems($d, $el_date);
-$el_img = parseElementsByClass($d, 'catboxphoto feature-image');
-var_dump($el_img);
+for ($i = 0; $i < $headers->length; $i++){
 
-displayElems($d, $el_img);
-//$img_tag = loadDocToParser($l);
-//var_dump($img_tag);
-$img_xpath = new DOMXPath($d);
+    $link = $headers->item($i)->getElementsByTagName('a')->item(0)->getAttribute('href');
+    //var_dump($link);
 
-$img_link = $img_xpath->query('//img[@class="catboxphoto feature-image"]')->item(0)->getAttribute('src');
-//$img_link = $img_xpath->evaluate("string(//img/@src)");
-//$img_link = parseElements($d, 'src', 'catboxphoto feature-image');
-//var_dump($img_link);
-downloadImg($img_link);
-$el_description = parseElementsByClass($d, 'storycontent');
-displayElems($d, $el_description);
+    $htmlFromLink = curl_get($link);
+    $dom_link = loadDocToParser($htmlFromLink);
+
+    $search = new DOMXPath($dom_link);
+    $title = $search->query("//*[contains(@class, 'storyheadline')]");
+    $description = $search->query("//*[contains(@class, 'storycontent')]");
+
+    $date = $search->query("//*[contains(@class, 'storydate')]");
+
+    $img = $search->query("//*[contains(@class, 'catboxphoto')]")->item(0)->getAttribute('src');
+    $img_link = downloadImg($img);
+
+    var_dump($img_link);
+    echo "<br>";
+
+    $statement = $conn->prepare("INSERT INTO table_content(header, description, date, img) VALUES (?,?,?,?)");
+    $statement->execute(array($title->item(0)->textContent, $description->item(0)->textContent,$date->item(0)->textContent,$img_link));
+
+}
