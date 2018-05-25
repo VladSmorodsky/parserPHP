@@ -21,3 +21,10 @@ function downloadImg($imgLink){
     copy($url, $name);
     return $name; // Returm link
 }
+
+function showParseElements($dom, $elems){
+    foreach ($elems as $elem){
+        echo $dom->saveXML($elem)."<br>";
+        break;
+    }
+}
