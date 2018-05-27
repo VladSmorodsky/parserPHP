@@ -7,5 +7,5 @@
  */
 $servername = "localhost";
 $username = "root";
-$password = "storm1382";
+$password = "1234";
 $db_name = "parserphp";
