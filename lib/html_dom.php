@@ -15,7 +15,6 @@ function loadDocToParser($html){
 
 //Downloading image
 function downloadImg($imgLink){
-    //$img =  parseElementsByClass($dom, $imgLink);//parseDescriptionText($list->current(), 'catboxphoto feature-image');
     $url= $imgLink; //"https://dailyillini.com/wp-content/uploads/2018/05/Illini-4000-photo-475x459.jpg"
     $name = "storage/".basename($url);
     copy($url, $name);

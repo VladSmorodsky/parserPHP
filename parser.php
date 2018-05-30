@@ -11,8 +11,6 @@
 ini_set("max_execution_time", "1200"); #изменяем максимальное время выполнения скрипта до 1200 секунд
 libxml_use_internal_errors(true); //hide warnings from web site
 
-
-//require_once ('lib/sql.php');
 include_once ('lib/curl_query.php');
 include_once ('lib/html_dom.php');
 require_once ("lib/sql.php");
@@ -88,13 +86,12 @@ for ($i = 0; $i < $headers->length; $i++){
         $content_id = $connection->prepare("SELECT id from table_content WHERE title ='$header'");
         $content_id->execute();
 
-        $statem = $connection->prepare("INSERT INTO description_anchors(id_content, src, text, p_number, position) VALUES (?,?,?,?,?)");
+        $href_insertion = $connection->prepare("INSERT INTO description_anchors(id_content, src, text, p_number, position) VALUES (?,?,?,?,?)");
         while ($id = $content_id->fetch(PDO::FETCH_OBJ)){
-            $statem->execute(array($id->id, $src[$el], $href_txt[$el] ,$p[$el],$pos[$el]));
+            $href_insertion->execute(array($id->id, $src[$el], $href_txt[$el] ,$p[$el],$pos[$el]));
         }
 
     }
-    //echo "<hr><br>";
     $pos = null;
     $src = null;
     $p = null;
