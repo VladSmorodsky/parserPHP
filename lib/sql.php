@@ -19,22 +19,6 @@ catch(PDOException $e)
 }
 
 
-/*function connect($servername, $username, $password, $db_name){
-
-    try {
-        $conn = new PDO("mysql:host=$servername;dbname=$db_name", $username, $password);
-        // set the PDO error mode to exception
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return $conn;
-    }
-    catch(PDOException $e)
-    {
-        return $e->getMessage();
-    }
-
-}*/
-
-
 
 
 
