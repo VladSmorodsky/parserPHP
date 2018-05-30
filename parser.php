@@ -11,15 +11,13 @@
 ini_set("max_execution_time", "1200"); #изменяем максимальное время выполнения скрипта до 1200 секунд
 libxml_use_internal_errors(true); //hide warnings from web site
 
-
-//require_once ('lib/sql.php');
 include_once ('lib/curl_query.php');
 include_once ('lib/html_dom.php');
 require_once ("lib/sql.php");
 
 
 
-$html = curl_get('https://dailyillini.com/news/'); //Content getting
+$html = curl_get('https://dailyillini.com/news/'); //getting Content
 $dom = loadDocToParser($html);
 
 
@@ -39,7 +37,7 @@ for ($i = 0; $i < $headers->length; $i++){
     $description_parent = $search->query("//*[contains(@class, 'storycontent')]");
 
 
-    $date = $search->query("//*[contains(@class, 'storydate')]"); // parse the date grom html
+    $date = $search->query("//*[contains(@class, 'storydate')]"); // parse the date from html
 
     $img = $search->query("//*[contains(@class, 'catboxphoto')]");
 
@@ -94,7 +92,7 @@ for ($i = 0; $i < $headers->length; $i++){
         }
 
     }
-    //echo "<hr><br>";
+
     $pos = null;
     $src = null;
     $p = null;
