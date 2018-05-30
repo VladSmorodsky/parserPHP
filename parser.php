@@ -61,7 +61,6 @@ for ($i = 0; $i < $headers->length; $i++){
                     $href = $anchors->item($a)->getAttribute('href');
                     $text = $anchors->item($a)->textContent;
                     $position = strpos($description->item($c)->textContent, $anchors->item($a)->textContent);
-                    //$description_txt = substr_replace($description->item($c)->textContent,"VLAD",$position);
                     $pos[] = $position;
                     $src[] = $href;
                     $href_txt[] = $text;
@@ -91,7 +90,6 @@ for ($i = 0; $i < $headers->length; $i++){
 
         $statem = $connection->prepare("INSERT INTO description_anchors(id_content, src, text, p_number, position) VALUES (?,?,?,?,?)");
         while ($id = $content_id->fetch(PDO::FETCH_OBJ)){
-            echo $id->id;
             $statem->execute(array($id->id, $src[$el], $href_txt[$el] ,$p[$el],$pos[$el]));
         }
 
