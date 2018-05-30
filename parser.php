@@ -22,6 +22,7 @@ require_once ("lib/sql.php");
 $html = curl_get('https://dailyillini.com/news/'); //Content getting
 $dom = loadDocToParser($html);
 
+
 $finder = new DomXPath($dom);
 $headers = $finder->query("//*[contains(@class, 'searchheadline')]");
 
@@ -52,6 +53,7 @@ for ($i = 0; $i < $headers->length; $i++){
         $description = $description_parent->item($p_counter)->getElementsByTagName('p');
         while ($c < $description->length){
             $anchors = $description->item($c)->getElementsByTagName('a');
+
             $description_txt .= "<p>".$description->item($c)->textContent."</p>";
             if ($anchors->length != 0){
                 for ($a = 0; $a < $anchors->length; $a++) {
@@ -59,6 +61,7 @@ for ($i = 0; $i < $headers->length; $i++){
                     $href = $anchors->item($a)->getAttribute('href');
                     $text = $anchors->item($a)->textContent;
                     $position = strpos($description->item($c)->textContent, $anchors->item($a)->textContent);
+                    //$description_txt = substr_replace($description->item($c)->textContent,"VLAD",$position);
                     $pos[] = $position;
                     $src[] = $href;
                     $href_txt[] = $text;
@@ -71,7 +74,7 @@ for ($i = 0; $i < $headers->length; $i++){
         $p_counter++;
     }
 
-   /* showParseElements($dom_link, $title);
+   /*showParseElements($dom_link, $title);
     showParseElements($dom_link, $date);
     showParseElements($dom_link, $img);
     showParseElements($dom_link, $description);*/
@@ -81,7 +84,7 @@ for ($i = 0; $i < $headers->length; $i++){
     $statement = $connection->prepare("INSERT INTO table_content(title, description, date, img) VALUES (?,?,?,?)");
     $statement->execute(array($header, $description_txt, $date->item(0)->textContent, $img_link));
 
-
+    // LINKS FOR DESCRIPTION INSERTION
     for ($el = 0; $el < count($src); $el++){
         $content_id = $connection->prepare("SELECT id from table_content WHERE title ='$header'");
         $content_id->execute();
