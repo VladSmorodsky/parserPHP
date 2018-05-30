@@ -7,38 +7,50 @@
         <li><a href="select_news.php">Select news</a></li>
     </ul>
 </div>
+
 <?php
 
-$i = <<<Heredoc
-A reception will be held on June 5 at 3 p.m. at the south entrance of the Beckman Institute to welcome the Illini 4000 team to the University as they bike across the United States to raise awareness of cancer and fundraise for cancer research.
+/* TEST ADDING LINKS */
+/*
+require_once ("lib/sql.php");
 
-The Illini 4000 team began their 2018 trip in New York City on Friday and will end in San Francisco on August 2, said Margaret Browne Huntt, associate director of the Cancer Center at Illinois, in an email.
+$r = $connection->prepare("SELECT * FROM table_content");
+$r->execute();
+$contents = $r->fetchAll(PDO::FETCH_ASSOC);
 
-“The Illini 4000 is a non-profit organization dedicated to documenting the American cancer experience through the Portraits Project, raising funds for cancer research and patient support services as well as spreading awareness for the fight against cancer through the fight against cancer through annual cross-country bike rides,” Huntt said.
+foreach ($contents as $content){
 
-The reception provides the public with an opportunity to meet the team and cheer them on. The event is open to anyone, including those who have been affected by cancer. It will include multiple activities such as a short program, raffle and several outdoor events, Huntt said.
+    $id_contents = $connection->prepare("SELECT * FROM table_content INNER JOIN description_anchors ON table_content.id = description_anchors.id_content WHERE table_content.id = ?");
+    //$id_contents = $connection->prepare("SELECT * FROM description_anchors ");
+    $id_contents->execute(array($content["id"]));
+    $replace_content = $id_contents->fetchAll(PDO::FETCH_ASSOC);
 
-Catherine Schmid, recent graduate in LAS and vice president of the Illini 4000, said the reception will be held by the Cancer Center at Illinois.
+    $r_count =  count($replace_content["src"]);
 
-“The Cancer Center has wanted to host a reception for the Illini 4000 to welcome us back to campus. We have been currently working on a partnership with the Cancer Center and so with that, we are looking to be more involved next year with campus efforts and kind of connecting the campus community at Illinois,” Schmid said.
+    foreach ($replace_content as $r_content){
+        //var_dump($r_content["src"]);
+        preg_match_all('/<p>(.*?)<\/p>/s', $content["description"], $paragraphs, PREG_OFFSET_CAPTURE);
+        //var_dump($paragraphs);
 
-In years past, there have been events while the Illini 4000 cycling team has passed through campus, but this is the first year where there will be a reception hosted by the Cancer Center at Illinois.
+        for ($p_count = 0; $p_count < count($paragraphs[0]); $p_count++) {
+            //var_dump($p_count);
+            //var_dump($r_content["p_number"]-1);
+            if ($p_count == $r_content["p_number"] - 1){
+                $position = strpos($paragraphs[0][$p_count][0], $r_content["text"]);
+                //var_dump(substr_replace($paragraphs[0][$p_count][0],"<a href=".$r_content["src"].">".$r_content["text"]."</a>",$position,strlen($r_content["text"])));
+                $paragraphs[0][$p_count][0] = substr_replace($paragraphs[0][$p_count][0],"<a href=".$r_content["src"].">".$r_content["text"]."</a>",$position,strlen($r_content["text"]));
 
-There will be multiple people attending, possibly some who are coming from the ride along. A ride along is where people can choose to cycle from different starting or endpoints with the Illini 4000 team instead of cycling with them through the whole trip from New York City to San Francisco, Schmid said.
+            }
+            $desctiption = ($paragraphs[0][$p_count][0]);
+            $updateDescription = $connection->prepare("UPDATE table_content SET description=? WHERE id=?");
+            //$updateDescription->bindParam($content["description"],$r_content["id_content"]);
+            $updateDescription->execute(array($desctiption,$r_content["id_content"]));
+            continue;
+        }
+        echo "<hr>";
 
-University Chancellor Robert Jones, Jim Moore, Jr., president and CEO of the Universtiy of Illinois Foundation and Barry Benson, vice chancellor for advancement, are participating in the ride along with the Illini 4000 team.
-
-“This is kind of the first year we have done a ride along because the University administration has wanted to do it and we would like to have them involved as well,” Schmid said.
-Heredoc;
-
-$str = " June 5 at 3 p.m.";
-
-$d = strpos($i, $str);
-
-echo $d;
-
-echo substr_replace($i,"<a href='http://google.com'>$str</a>",strlen($str),$d);
-
+    }
+}*/
 ?>
 
 <?php include_once "templates/footer.php"; ?>
